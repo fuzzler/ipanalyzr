@@ -1,50 +1,50 @@
 body {
-    background-color: #E5FEA2;
+    background-color: #0A012B;
+    color: rgb(212, 235, 243);
 }
 
 a {
-    color: black;
+    color: rgb(212, 235, 243);
 }
 
 a:visited {
-    color: black;
+    color: red;
 }
 
 a:hover {
-    color: purple;
+    color: rgb(236, 17, 171);
 }
 
 .pulsante {
     height: 45px;
-    width: 135px;
-    background-color: green;
-    color: lightblue;
+    width: 145px;
+    background-color: red;
+    color: rgb(212, 235, 243);
     font-size: 25px;
     font-weight: bolder;
+    border: 2px solid rgb(78, 0, 46);
+    border-radius: 15px;
 }
 
 .pulsante:hover {
-    background-color: yellow;
-    color: green;
+    background-color: rgb(212, 235, 243);;
+    color: red;
     cursor: pointer;
 }
 
-#ses_lat {
-    float: right;
-    text-align: right;
-    color: darkgreen;
-}
 
 .titolo {
     text-align: center;
     font-weight: bolder;
     font-size: 45;
+    text-shadow: 1px 1px 1px rgb(223, 14, 223);
 }
 
 .titolog {
     text-align: center;
     font-weight: bolder;
     font-size: 65;
+    text-shadow: 2px 2px 2px rgb(223, 14, 223);
 }
 
 .txtcenter {
@@ -61,11 +61,6 @@ a:hover {
     color: red;
 }
 
-.valid_mess {
-    text-align: center;
-    font-weight: bolder;
-    color: green;
-}
 
 .link {
     text-decoration: underline;
@@ -83,10 +78,4 @@ a:hover {
 
 .floatr {
     float: right;
-}
-
-.cats {
-    background-image: linear-gradient(to right, rgb(2, 58, 2) , yellow);
-    border-top: 3px solid black;
-    border-bottom: 3px solid black;;
 }

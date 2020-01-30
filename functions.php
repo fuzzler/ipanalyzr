@@ -114,10 +114,10 @@ function findNet($ip,$sm) {
     return $res;
 }
 
+// converte un IP di rete da BIN a DEC
+function ip2Dec($ipbin) {
 
-function net2Dec($nb) {
-
-    $expl = explode('.',$nb);
+    $expl = explode('.',$ipbin);
 
     $n = "";
 
@@ -134,4 +134,77 @@ function net2Dec($nb) {
 
     return $n;
 
+}
+
+
+// Calcola l'indirizzo di Broadcast in Binario
+function findBroad($ip,$sm) {
+
+    $zbit = 0; // conta i bit liberi della subnet
+
+    for($i=(strlen($sm)-1); $i>0;$i--) {
+        //echo $sm[$i];
+        if($sm[$i]=="0") {
+            $zbit++;
+        }
+    }
+
+    // converto IP di rete in broadcast (tutti 1 nel dominio)
+    for($i=(strlen($ip)-1); $i>0;$i--) {
+        //echo "Prima:".$ip[$i]."<br>Dopo:";
+        if($zbit>0) {
+            $ip[$i] = "1";
+            $zbit--;
+        }
+        //echo $ip[$i]."<br>";
+    }
+
+    //echo "<br>NewIP: $ip<br>";
+    return $ip;
+
+}
+
+// Restituisce la lista dei possibili indirizzi dall'indirizzo di rete (NET) e quello di Broadcast
+function listNetworkIp($net,$broadcast) {
+
+    $lista4=[]; // lista da ritornare (4 ottetto)
+
+    $no = explode('.', $net); // array con gli ottetti dell'indirizzo NET
+    $bo = explode('.', $broadcast); // array con gli ottetti dell'indirizzo NET
+
+    //var_dump($bo);
+
+    // Verifico che i primi ottetti non siano diversi (reti classe A e B) => n_host incalcolabile
+    if((levenshtein($no[0],$bo[0]) == 0) && (levenshtein($no[1],$bo[1]) == 0) ) {
+
+        // Calcolo non ancora abilitato
+        if(levenshtein($no[2],$bo[2]) > 0) {
+            //$diff3 = (int) $bo[2] - (int) $no[2]; // differenza (3 ottetto) per controllo
+            $start3 = (int) $no[2]+1;
+            $end3 = (int) $bo[2];
+            $root3 = $no[0].".".$no[1].".";
+
+            for($i=$start3; $i<$end3; $i++) {
+
+                $lista3[] = $root3.$i;
+            
+            }
+        }
+
+        if(levenshtein($no[3],$bo[3]) > 0) {
+            //$diff4 = (int) $bo[3] - (int) $no[3]; // differenza (4 ottetto) per controllo
+            $start4 = (int) $no[3]+1;
+            $end4 = (int) $bo[3];
+            $root4 = $no[0].".".$no[1].".".$no[2].".";
+
+            for($i=$start4; $i<$end4; $i++) {
+
+                $lista4[] = $root4.$i;
+            
+            }
+        }       
+
+    }    
+
+    return $lista4;
 }

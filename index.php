@@ -35,20 +35,51 @@ require_once 'template.php';
 
     <br><br>
         <div class="txtcenter">
-            <span class="txtbolder txtcenter">Inserisci qui IP e Subnet Mask che vuoi analizzare</span>
+            <span class="txtbolder txtcenter">Inserisci indirizzo IP e Subnet Mask che vuoi analizzare</span>
         </div>
         <br>
+        <div class="txtcenter">
+            <span class="txtbolder err_mess">
+                <?php 
+
+                if(isset($_SESSION['err_no_subnet'])) {
+                    echo $_SESSION['err_no_subnet']; echo "<br>"; 
+                }
+                if(isset($_SESSION['err_invalid_ip'])) {
+                    echo $_SESSION['err_invalid_ip']; echo "<br>"; 
+                }
+                if(isset($_SESSION['err_invalid_sm'])) {
+                    echo $_SESSION['err_invalid_sm']; echo "<br>"; 
+                }
+                
+                if(isset($_SESSION['ip'])) {
+                    $ip = $_SESSION['ip'];
+                }
+
+                if(isset($_SESSION['sm'])) {
+                    $sm = $_SESSION['sm'];
+                }
+                
+                
+                ?>
+            </span>
+        </div>
+
         <div class="form-group">
             <form action="result.php" method="POST">
 
-                (*) IP:
-                <input class="form-control" type="text" name="ip" placeholder="Inserisci IP Address QUI" required><br>
+                (*) IP Address:
+                <input class="form-control" type="text" name="ip" placeholder="Inserisci IP Address QUI" value="<?php if(isset($ip)){echo $ip;} ?>" required><br>
 
-                (*) SM:
-                <input class="form-control" type="text" name="sm" placeholder="Inserisci Subnet Mask QUI" required><br>                
+                (**) Subnet Mask:
+                <input class="form-control" type="text" name="sm" placeholder="Inserisci Subnet Mask QUI" value="<?php if(isset($sm)){echo $sm;} ?>" ><br>                
+                
+                (**) Subnet Number (1-30):
+                <input class="form-control" type="number" name="sn" min="1" max="30" style="width: 100px;"><br>                
                 <br> 
-                (*) Campi obbligatori
-                <br>
+                (*) Campi obbligatori <br>
+                (**) Obbligatorio uno dei due <br>
+
                 <input type="submit" name="anal" value="Analizza" class="pulsante">
 
             </form>
@@ -64,7 +95,7 @@ require_once 'template.php';
             <br>
             <br>
             <br>
-            <a href="../index.php">TORNA INDIETRO</a>
+            <a href="../reset.php">TORNA INDIETRO</a>
         </div>
         <div class="col-8"></div>
         <div class="col-2"></div>
