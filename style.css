@@ -1,0 +1,92 @@
+body {
+    background-color: #E5FEA2;
+}
+
+a {
+    color: black;
+}
+
+a:visited {
+    color: black;
+}
+
+a:hover {
+    color: purple;
+}
+
+.pulsante {
+    height: 45px;
+    width: 135px;
+    background-color: green;
+    color: lightblue;
+    font-size: 25px;
+    font-weight: bolder;
+}
+
+.pulsante:hover {
+    background-color: yellow;
+    color: green;
+    cursor: pointer;
+}
+
+#ses_lat {
+    float: right;
+    text-align: right;
+    color: darkgreen;
+}
+
+.titolo {
+    text-align: center;
+    font-weight: bolder;
+    font-size: 45;
+}
+
+.titolog {
+    text-align: center;
+    font-weight: bolder;
+    font-size: 65;
+}
+
+.txtcenter {
+    text-align: center;    
+}
+
+.txtbolder {
+    font-weight: bolder;
+}
+
+.err_mess {
+    text-align: center;
+    font-weight: bolder;
+    color: red;
+}
+
+.valid_mess {
+    text-align: center;
+    font-weight: bolder;
+    color: green;
+}
+
+.link {
+    text-decoration: underline;
+}
+
+.tabella {
+    float: center;
+    margin: 0 auto;
+}
+
+.marginzero {
+    margin: 0 auto;
+}
+
+
+.floatr {
+    float: right;
+}
+
+.cats {
+    background-image: linear-gradient(to right, rgb(2, 58, 2) , yellow);
+    border-top: 3px solid black;
+    border-bottom: 3px solid black;;
+}
