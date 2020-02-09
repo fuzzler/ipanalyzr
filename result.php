@@ -15,6 +15,7 @@
 <div class="row">
     <div class="col-2"></div>
     <div class="col-8 txtcenter">
+
 <?php
 $pagename="Risultati";
 
@@ -104,10 +105,10 @@ $net=ipToDec($netbin);
 //$bbin=findBroad($ipbin,$smbin); // Broadcast in formato binario
 $bbin=findBroad($sn,$netbin); // Broadcast in formato binario
 $broadcast=ipToDec($bbin);
-$listaHost=listNetworkIp($net,$broadcast);
-$n_host = count($listaHost);
-$primo=$listaHost[0];
-$ultimo=$listaHost[count($listaHost)-1];
+$listaHost=listNetworkIp($net,$broadcast,$sn);
+$n_host = $listaHost['nhost'];
+$primo=$listaHost['primo'];
+$ultimo=$listaHost['ultimo']; // [count($listaHost)-1]; -> nell'altro metodo
 
 // Calcolo il Tipo con la distanza di Levenshtein
 if(levenshtein($ip,$net) == 0) {
@@ -164,21 +165,29 @@ else {
 
 <?php
 
-$cr = 0; // conta le righe
-if(count($listaHost) == 0) {
-    echo "Impossibile calcolare Numero di Host e indirizzi (prob rete di classe A o B => troppi host da listare)";
+$cr = 1; // conta le righe
+$count = 0; // conta le celle
+
+if($listaHost['nhost'] > 1000) {
+    echo "<h3>Il numero degli host è troppo elevato per elencarli tutti </h3>";
+    echo "<h3>Primo IP: $primo &nbsp&nbsp&nbsp&nbsp|&nbsp&nbsp&nbsp&nbsp Ultimo IP: $ultimo</h3>";
 }
 else {
-    foreach($listaHost as $lh) {
+    echo "<th>$cr</th>";
+    foreach($listaHost['lista'] as $lh) {
+        
         echo "<td>$lh<td>";
         $count++;
         if($count == 5) {
             $count=0;
             echo "</tr><tr>";
+            $cr++;
+            echo "<th>$cr</th>";
         }
     }
 }
 ?>
+    </tr>
 </table>
 <?php
 

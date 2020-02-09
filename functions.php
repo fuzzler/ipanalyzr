@@ -1,5 +1,9 @@
 <?php
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 function ipToBinary($ip) {
 
     $ipbin="";
@@ -150,7 +154,6 @@ function ipToDec($ipbin) {
 
 
 // Calcola l'indirizzo di Broadcast in Binario
-//function findBroad($ip,$sm) {
 function findBroad($sn,$net) {
 
     $fbit = 0; // conta i bit liberi della subnet (free bit)
@@ -175,73 +178,47 @@ function findBroad($sn,$net) {
 
     $ip = rtrim($ip, ".");
 
-    /*
-    for($i=(strlen($sm)-1); $i>0;$i--) {
-        //echo $sm[$i];
-        if($sm[$i]=="0") {
-            $zbit++;
-        }
-    }
-
-    // converto IP di rete in broadcast (tutti 1 nel dominio)
-    for($i=(strlen($ip)-1); $i>0;$i--) {
-        //echo "Prima:".$ip[$i]."<br>Dopo:";
-        if($zbit>0) {
-            $ip[$i] = "1";
-            $zbit--;
-        }
-        //echo $ip[$i]."<br>";
-    }
-
-    //echo "<br>NewIP: $ip<br>";
-    */
     return $ip;
 
 }
 
 // Restituisce la lista dei possibili indirizzi dall'indirizzo di rete (NET) e quello di Broadcast
-function listNetworkIp($net,$broadcast) {
+function listNetworkIp($net,$broadcast,$sn) {
 
-    $lista4=[]; // lista da ritornare (4 ottetto)
+    $lista=[]; // lista da ritornare 
 
     $no = explode('.', $net); // array con gli ottetti dell'indirizzo NET
     $bo = explode('.', $broadcast); // array con gli ottetti dell'indirizzo NET
 
-    //var_dump($bo);
+    $nbit = 32-$sn; // numero di bit assegnati agli host
+     
+    $nhost = pow(2,$nbit); // numero totale degli host
 
-    // Verifico che i primi ottetti non siano diversi (reti classe A e B) => n_host incalcolabile
-    if((levenshtein($no[0],$bo[0]) == 0) && (levenshtein($no[1],$bo[1]) == 0) ) {
+    $start = (int) $no[3]+1;
+    $end = (int) $bo[3]-1;
+    $roots = $no[0].".".$no[1].".".$no[2].".";
+    $roote = $bo[0].".".$bo[1].".".$bo[2].".";
+    $primo = $roots.$start;
+    $ultimo = $roote.$end;
 
-        // Calcolo non ancora abilitato
-        if(levenshtein($no[2],$bo[2]) > 0) {
-            //$diff3 = (int) $bo[2] - (int) $no[2]; // differenza (3 ottetto) per controllo
-            $start3 = (int) $no[2]+1;
-            $end3 = (int) $bo[2];
-            $root3 = $no[0].".".$no[1].".";
+    if($nhost > 1000) {
+        $lista[0] = $primo;
+        $lista[1] = $ultimo;
+    }
+    else {
+        for($i=$start; $i<=$end; $i++) {
 
-            for($i=$start3; $i<$end3; $i++) {
-
-                $lista3[] = $root3.$i;
-            
-            }
+            $lista[] = $roots.$i;
+        
         }
+    }
 
-        if(levenshtein($no[3],$bo[3]) > 0) {
-            //$diff4 = (int) $bo[3] - (int) $no[3]; // differenza (4 ottetto) per controllo
-            $start4 = (int) $no[3]+1;
-            $end4 = (int) $bo[3];
-            $root4 = $no[0].".".$no[1].".".$no[2].".";
+    $ret['primo'] = $primo;
+    $ret['ultimo'] = $ultimo;
+    $ret['lista'] = $lista;
+    $ret['nhost'] = $nhost;  
 
-            for($i=$start4; $i<$end4; $i++) {
-
-                $lista4[] = $root4.$i;
-            
-            }
-        }       
-
-    }    
-
-    return $lista4;
+    return $ret;
 }
 
 /* ==================== Number Subnet Mask To Binary IP ========================
