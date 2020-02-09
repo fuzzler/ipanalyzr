@@ -57,7 +57,6 @@ function decToBinary($n) {
             $r = "0".$r;
         }
     }
-
     //DEBUG: echo "<br>(After)R.length: ".strlen($r)."<br>";
 
     return $r;
@@ -65,18 +64,31 @@ function decToBinary($n) {
 }
 
 // Stabilisce se l'indirizzo è classful o classless
-function whichClass($sm) {
+function whichClass($sn,$ip) {
 
-    $expl = explode('.',$sm);
-
-    //var_dump((int) $expl[3]);
-
-    // Verifico che l'ultimo ottetto sia maggiore di 0 -> classless / classful
-    if( (int) $expl[3] > 0) {
-        return "ClassLess";
-    }
-    else {
-        return "ClassFull";
+    $add = ""; // Aggiunge la lettera della classe
+    switch($sn) {
+        case 8:
+            if($ip[0]=="0") {
+                $add="A";
+            }
+            return "$add ClassFull";
+        break;
+        case 16:
+            if($ip[0]=="1" && $ip[1] == "0") {
+                $add="B";
+            }
+            return "$add ClassFull";
+        break;
+        case 24:
+            if($ip[0]=="1" && $ip[1] == "1" && $ip[2] == "0") {
+                $add="C";
+            }
+            return "$add ClassFull";
+        break;
+        default:
+            return "Classless";
+        break;
     }
 }
 
@@ -115,7 +127,7 @@ function findNet($ip,$sm) {
 }
 
 // converte un IP di rete da BIN a DEC
-function ip2Dec($ipbin) {
+function ipToDec($ipbin) {
 
     $expl = explode('.',$ipbin);
 
@@ -138,10 +150,32 @@ function ip2Dec($ipbin) {
 
 
 // Calcola l'indirizzo di Broadcast in Binario
-function findBroad($ip,$sm) {
+//function findBroad($ip,$sm) {
+function findBroad($sn,$net) {
 
-    $zbit = 0; // conta i bit liberi della subnet
+    $fbit = 0; // conta i bit liberi della subnet (free bit)
+    $ob = "";
 
+    $oct = explode('.',$net);
+
+    foreach($oct as $o) {
+        
+        for($i=0; $i < strlen($o); $i++) {
+
+            if($sn > 0) {
+                $ob[$i] = $o[$i]; // ottetto broadcast in copia
+                $sn--;
+            }
+            else {
+                $ob[$i] = "1";
+            }
+        }
+        $ip.=$ob.".";
+    }
+
+    $ip = rtrim($ip, ".");
+
+    /*
     for($i=(strlen($sm)-1); $i>0;$i--) {
         //echo $sm[$i];
         if($sm[$i]=="0") {
@@ -160,6 +194,7 @@ function findBroad($ip,$sm) {
     }
 
     //echo "<br>NewIP: $ip<br>";
+    */
     return $ip;
 
 }
@@ -207,4 +242,47 @@ function listNetworkIp($net,$broadcast) {
     }    
 
     return $lista4;
+}
+
+/* ==================== Number Subnet Mask To Binary IP ========================
+ * Questa funzione riceve un numero intero e restittuisce la 
+ * Subnet Mask in formato binario (come stringa)
+ */
+function nSmToBinIp($sn) {
+
+    $snb = "";
+
+    for($i=1;$i<=32;$i++) {
+
+        if($i<=$sn) {
+            $snb.="1";
+        }
+        else {
+            $snb.="0";
+        }
+
+        if($i%8==0 && $i<32){
+            $snb.=".";
+        }
+    }
+
+    return $snb;
+}
+
+/* ==================== Number Subnet Mask From IP ========================
+ * Questa funzione riceve la Subnet Mask come numero binario e restituisce
+ * il corrispondente numero di subnetting
+ */
+function nSmFromIp($sm) {
+
+    $count = 0;
+
+    for($i=0;$i<32;$i++) {
+
+        if($sm[$i]=="1") {
+            $count++;
+        }
+    }
+    
+    return $count;
 }

@@ -1,6 +1,20 @@
 <br>
-<a style="color:blue" href="reset.php">Torna Indietro </a>
-<br><br>
+<div class="row">
+    <div class="col-2">
+        <a style="color:blue" href="reset.php">Torna Indietro </a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-2"></div>
+    <div class="col-8 txtcenter">
+        <h1 class="titolog">Stampa dei Risultati</h1>
+    </div>
+    <div class="col-2"></div>
+</div>
+
+<div class="row">
+    <div class="col-2"></div>
+    <div class="col-8 txtcenter">
 <?php
 $pagename="Risultati";
 
@@ -10,8 +24,8 @@ require_once 'template.php';
 
 // Variabili 
 
-$sm = "Non impostata";
-$sn = "Non impostato";
+$sm = "";
+$sn = "";
 
 $ipbin="";
 $smbin="";
@@ -44,6 +58,8 @@ else {
         if (filter_var($_POST['sm'], FILTER_VALIDATE_IP)) {
             $sm = $_POST['sm'];
             $_SESSION['sm'] = $sm;
+            $smbin = ipToBinary($sm);
+            $sn = nSmFromIp($smbin);
         }
         else {
             $_SESSION['err_invalid_sm'] = "La Subnet Mask inserita NON è valida!";
@@ -52,27 +68,46 @@ else {
     }
     else {
         $sn = $_POST['sn'];
+        $smbin = nSmToBinIp($sn);
+        $sm = ipToDec($smbin);
     }
 }
 
 // Debug: var_dump($_POST);
 
 
+?>
 
-echo "<h3>Dati trasmessi</h3>";
-echo "IP:".$ip."<br>";
-echo "SM:".$sm."<br>";
+<br>
+<table class="marginzero table table-striped" style="color:white;">
+    <thead class="thead-light"><u><h2 class="txtcenter">Dati trasmessi</h2></u></thead>
+    <tr>
+        <td>IP Address: </td><td><b><?php echo "$ip / $sn" ?></b></td>
+    </tr>
+    <tr>
+        <td>Subnet Mask:<td><b><?php echo $sm;?></b></td>
+    </tr>
+</table>
+
+<?php
+
+
+//echo "SM (number format):".$sn."<br>";
+
+//if(filter_var($_POST['sm'], FILTER_VALIDATE_IP)) {}else {$smbin=ipToBinary($sm);}
 
 
 $ipbin=ipToBinary($ip);
-$smbin=ipToBinary($sm);
-$class=whichClass($sm);
+$class=whichClass($sn,$ipbin);
 $netbin=findNet($ipbin,$smbin);
-$net=ip2Dec($netbin); 
-$bbin=findBroad($ipbin,$smbin); // Broadcast in formato binario
-$broadcast=ip2Dec($bbin);
+$net=ipToDec($netbin); 
+//$bbin=findBroad($ipbin,$smbin); // Broadcast in formato binario
+$bbin=findBroad($sn,$netbin); // Broadcast in formato binario
+$broadcast=ipToDec($bbin);
 $listaHost=listNetworkIp($net,$broadcast);
 $n_host = count($listaHost);
+$primo=$listaHost[0];
+$ultimo=$listaHost[count($listaHost)-1];
 
 // Calcolo il Tipo con la distanza di Levenshtein
 if(levenshtein($ip,$net) == 0) {
@@ -84,32 +119,68 @@ elseif(levenshtein($ip,$broadcast) == 0) {
 else {
     $tipo = "Host";
 }
+?>
+<br>
+<table class="marginzero table table-striped" style="color:white; letter-spacing: 2px;">
+    <thead><u><h2 class="txtcenter">Analisi</h2></u></thead>
+    <tr>
+        <td colspan="2" class="txtcenter altbgcolor"><h5>Indirizzi in formato binario</h5></td>
+    </tr>
+        <td>IP Address</td>   <td class="txtright"><b><?=$ipbin?></b></td>
+    </tr>    
+        <td>Subnet Mask</td>   <td class="txtright"><b><?=$smbin?></b></td>
+    </tr>
+        <td>Network </td>   <td class="txtright"><b><?=$netbin?></b></td>
+    </tr>
+        <td>Broadcast</td>   <td class="txtright"><b><?=$bbin?></b></td>
+    </tr>
+        <td colspan="2" class="txtcenter altbgcolor"><h5>Indirizzi in formato decimale</h5></td>
+    </tr>
+        <td>Network</td>   <td class="txtright"><b><?=$net?></b></td>
+    </tr>
+        <td>Broadcast</td>   <td class="txtright"><b><?=$broadcast?></b></td>
+    </tr>
+        <td colspan="2" class="txtcenter altbgcolor"><h5>Altre Info</h5></td>
+    </tr>
+        <td>Classe</td>   <td class="txtright"><b><?=$class?></b></td>
+    </tr>
+        <td>Indirizzo di</td>   <td class="txtright"><b><?=$tipo?></b></td>
+    </tr>
+        <td>Numero IP disponibili</td>   <td class="txtright"><b><?=$n_host?></b></td>
+    </tr>
+    </tr>
+        <td>Primo IP disponibile</td>   <td class="txtright"><b><?=$primo?></b></td>
+    </tr>
+    </tr>
+        <td>Ultimo IP disponibile</td>   <td class="txtright"><b><?=$ultimo?></b></td>
+    </tr>
 
+</table>
+</b><br><br>
 
-echo "<br><u><h2>Analisi</h2></u>";
-echo "<br>IP Binario: <b>".$ipbin;
-echo "</b><br>SM Binario: <b>".$smbin;
-echo "</b><br>Indirizzo di rete (binario): <b>".$netbin."</b> ";
-echo "<br>Indirizzo di Broadcast (binario): <b>".$bbin;
+<table class="table table-bordered txtcenter" style="color:white;">
+    <thead><u><b><h3>Lista Indirizzi IP Disponibili:</h3></b></u></thead>
+    <tr>
 
-echo "</b><br><br> Indirizzo di Rete (decimal): <b>".$net;
-echo "</b><br>Indirizzo di Broadcast: <b>".$broadcast;
+<?php
 
-echo "</b><br>Classe di rete: <b>".$class;
-echo "</b><br>Tipo di indirizzo: <b>".$tipo;
-echo "</b><br>N° IP Host disponibili: <b>".$n_host;
-
-echo "</b><br><br><u><b><h3>Lista Indirizzi Disponibili:</h3></b></u>";
-
+$cr = 0; // conta le righe
 if(count($listaHost) == 0) {
     echo "Impossibile calcolare Numero di Host e indirizzi (prob rete di classe A o B => troppi host da listare)";
 }
 else {
     foreach($listaHost as $lh) {
-        echo "<br>$lh";
+        echo "<td>$lh<td>";
+        $count++;
+        if($count == 5) {
+            $count=0;
+            echo "</tr><tr>";
+        }
     }
 }
-
+?>
+</table>
+<?php
 
 
 /*
@@ -125,7 +196,17 @@ $char = chr(bindec($t));
 echo "<br><br>D2B:".$t."->".count($t).gettype($t).strlen($t);
 echo "<br><br>char:".$char."->".count($char).gettype($char).strlen($char);
 */
-
 ?>
-<br><br><br><br><br>
-<a style="color:blue" href="reset.php">Torna Indietro </a>
+    </div>
+    <div class="col-2"></div>
+</div>
+
+<div class="row">
+    <div class="col-2"></div>
+    <div class="col-8 txtcenter"></div>
+    <div class="col-2">
+        <br><br><br><br><br>
+        <a style="color:blue" href="reset.php">Torna Indietro </a>
+    </div>
+</div>
+

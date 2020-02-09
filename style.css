@@ -37,7 +37,7 @@ a:hover {
     text-align: center;
     font-weight: bolder;
     font-size: 45;
-    text-shadow: 1px 1px 1px rgb(223, 14, 223);
+    text-shadow: 1px 1px 1px darkslategrey;
 }
 
 .titolog {
@@ -49,6 +49,14 @@ a:hover {
 
 .txtcenter {
     text-align: center;    
+}
+
+.txtright {
+    text-align: right;    
+}
+
+.txtleft {
+    text-align: left;    
 }
 
 .txtbolder {
@@ -78,4 +86,15 @@ a:hover {
 
 .floatr {
     float: right;
+}
+
+.tablgrid {
+    text-align: center;
+    margin: auto;
+    border: 1px solid white;
+    padding: 15px;
+}
+
+.altbgcolor {
+    background-color: darkslategrey;
 }
