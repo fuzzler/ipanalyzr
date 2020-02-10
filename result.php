@@ -168,7 +168,7 @@ else {
 $cr = 1; // conta le righe
 $count = 0; // conta le celle
 
-if($listaHost['nhost'] > 1000) {
+if($listaHost['nhost'] > 35000) {
     echo "<h3>Il numero degli host è troppo elevato per elencarli tutti </h3>";
     echo "<h3>Primo IP: $primo &nbsp&nbsp&nbsp&nbsp|&nbsp&nbsp&nbsp&nbsp Ultimo IP: $ultimo</h3>";
 }

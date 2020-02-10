@@ -2,6 +2,7 @@
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
+//ini_set('memory_limit', '-1');
 error_reporting(E_ALL);
 
 function ipToBinary($ip) {
@@ -156,8 +157,8 @@ function ipToDec($ipbin) {
 // Calcola l'indirizzo di Broadcast in Binario
 function findBroad($sn,$net) {
 
-    $fbit = 0; // conta i bit liberi della subnet (free bit)
     $ob = "";
+    $ip = "";
 
     $oct = explode('.',$net);
 
@@ -166,14 +167,14 @@ function findBroad($sn,$net) {
         for($i=0; $i < strlen($o); $i++) {
 
             if($sn > 0) {
-                $ob[$i] = $o[$i]; // ottetto broadcast in copia
+                $ob[$i]= $o[$i]; // ottetto broadcast in copia
                 $sn--;
             }
             else {
-                $ob[$i] = "1";
+                $ob[$i]= "1";
             }
         }
-        $ip.=$ob.".";
+        $ip.= $ob.".";
     }
 
     $ip = rtrim($ip, ".");
@@ -201,15 +202,18 @@ function listNetworkIp($net,$broadcast,$sn) {
     $primo = $roots.$start;
     $ultimo = $roote.$end;
 
-    if($nhost > 1000) {
+    //echo $start." - ".$end."<br>";
+
+    // Usare le funzioni ip2long e long2ip (!)
+    if($nhost > 35000) {
         $lista[0] = $primo;
         $lista[1] = $ultimo;
     }
     else {
-        for($i=$start; $i<=$end; $i++) {
+        for($i=ip2long($primo); $i<=ip2long($ultimo); $i++) {
 
-            $lista[] = $roots.$i;
-        
+            $ip2write = $i;
+            $lista[] = long2ip($ip2write);        
         }
     }
 

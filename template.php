@@ -11,8 +11,13 @@ ini_set('display_errors', 2); // per il debug (potrebbe essere deprecata in php7
 <!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
+    <meta name="description" content="ip,address,analize,statistics,ipcalc,calculate,
+    calculon,calculator,binary,decimal,dot,network,networking,nat,broadcast,tcp,tcpip,osi,iso,
+    stack,full,classless,classful,natting,dhcp,addressing">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-type" content="text/html">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
     <title><?php echo $pagename.' - '.NOME_APP ?></title>
 
     <script
@@ -32,7 +37,7 @@ ini_set('display_errors', 2); // per il debug (potrebbe essere deprecata in php7
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
     <!-- CUSTOM STYLE -->
-	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="style.css?v=1.1">
 	
 	<style>
         

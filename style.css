@@ -44,7 +44,7 @@ a:hover {
     text-align: center;
     font-weight: bolder;
     font-size: 65;
-    text-shadow: 2px 2px 2px rgb(223, 14, 223);
+    text-shadow: 2px 2px 2px darkslategrey;
 }
 
 .txtcenter {
