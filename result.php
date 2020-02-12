@@ -81,7 +81,7 @@ else {
 
 <br>
 <table class="marginzero table table-striped" style="color:white;">
-    <thead class="thead-light"><u><h2 class="txtcenter">Dati trasmessi</h2></u></thead>
+    <thead class="thead-light"><u><h2 class="txtcenter">Indirizzi inseriti</h2></u></thead>
     <tr>
         <td>IP Address: </td><td><b><?php echo "$ip / $sn" ?></b></td>
     </tr>
@@ -189,23 +189,24 @@ else {
 ?>
     </tr>
 </table>
+
+<br><br>
+<u><b><h3>Lista dei Nomi Host salvati in rete:</h3></u></b><br>
+<fieldset class="fs scheduler-border">
+
+
 <?php
 
+// restituisce la lista dei nomi host effettivamente salvati nella rete
+// ==> aggiungere la funzionalità che verifica quelli connessi...
+foreach($listaHost['hostnames'] as $hn) {
 
-/*
-
-$t = (int) 10.34/2;
-$v = "0"."1";
-echo "T:".$t;
-echo "V:".$v;
-
-$t = decbin(64);//decbin();
-echo "IP2BIN:".decbin($t);
-$char = chr(bindec($t));
-echo "<br><br>D2B:".$t."->".count($t).gettype($t).strlen($t);
-echo "<br><br>char:".$char."->".count($char).gettype($char).strlen($char);
-*/
+    echo "<span class=\"txt20\">$hn</span>";
+}
 ?>
+
+</fieldset>
+
     </div>
     <div class="col-2"></div>
 </div>

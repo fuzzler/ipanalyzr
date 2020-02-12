@@ -63,6 +63,10 @@ a:hover {
     font-weight: bolder;
 }
 
+.txt20 {
+    font-size: 25px;
+}
+
 .err_mess {
     text-align: center;
     font-weight: bolder;
@@ -97,4 +101,13 @@ a:hover {
 
 .altbgcolor {
     background-color: darkslategrey;
+}
+
+.fs {
+    border: 1px solid white;
+    border-radius: 20px;
+    text-align: center;
+    width: 100%;
+    margin: 0 auto;
+    padding: 10px;
 }

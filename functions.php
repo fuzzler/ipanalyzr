@@ -201,10 +201,11 @@ function listNetworkIp($net,$broadcast,$sn) {
     $roote = $bo[0].".".$bo[1].".".$bo[2].".";
     $primo = $roots.$start;
     $ultimo = $roote.$end;
+    $hosts = [];
 
     //echo $start." - ".$end."<br>";
 
-    // Usare le funzioni ip2long e long2ip (!)
+    // verifica che gli IP disponibili non superino le 5000 unità -> stila la lista
     if($nhost > 35000) {
         $lista[0] = $primo;
         $lista[1] = $ultimo;
@@ -212,11 +213,22 @@ function listNetworkIp($net,$broadcast,$sn) {
     else {
         for($i=ip2long($primo); $i<=ip2long($ultimo); $i++) {
 
-            $ip2write = $i;
-            $lista[] = long2ip($ip2write);        
+            $ip2conv = $i;
+            $ip2write = long2ip($ip2conv);
+            $lista[] = $ip2write;
+            
+            $host=gethostbyaddr($ip2write); // prelevo il nome del host (se disponibile)
+            //echo $host." | ";
+
+            // se il nome host NON è uguale all'IP -> salvo il nome Host in una lista
+            if(!filter_var($host, FILTER_VALIDATE_IP)) {
+                $hosts[] = "IP: $ip2write ==> Nome Host:<b> $host </b><br>";
+            }
+
         }
     }
 
+    $ret['hostnames'] = $hosts;
     $ret['primo'] = $primo;
     $ret['ultimo'] = $ultimo;
     $ret['lista'] = $lista;
