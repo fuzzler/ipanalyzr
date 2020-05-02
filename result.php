@@ -27,17 +27,17 @@ require_once 'template.php';
 
 $sm = "";
 $sn = "";
-
 $ipbin="";
 $smbin="";
 $netbin="";
 $net="";
 $class="";
 $tipo="";
-$bbin=""; // brouadcast binario
+$bbin=""; // broadcast binario
 $broadcast="";
 $n_host=0;
 $listaHost = [];
+$otherNet = []; // altre reti nel subnetting (applicando la regola del numero magico)
 
 // Verifico la validità dell'ip
 if (filter_var($_POST['ip'], FILTER_VALIDATE_IP)) {
@@ -109,6 +109,9 @@ $listaHost=listNetworkIp($net,$broadcast,$sn);
 $n_host = $listaHost['nhost'];
 $primo=$listaHost['primo'];
 $ultimo=$listaHost['ultimo']; // [count($listaHost)-1]; -> nell'altro metodo
+if($class=="Classless")
+    $allSubnets=calcSubnets($net, $smbin); // calcola le altre subnet
+
 
 // Calcolo il Tipo con la distanza di Levenshtein
 if(levenshtein($ip,$net) == 0) {
@@ -147,7 +150,7 @@ else {
     </tr>
         <td>Indirizzo di</td>   <td class="txtright"><b><?=$tipo?></b></td>
     </tr>
-        <td>Numero IP disponibili</td>   <td class="txtright"><b><?=$n_host?></b></td>
+        <td>Numero IP disponibili</td>   <td class="txtright"><b><?=$n_host-2?></b></td>
     </tr>
     </tr>
         <td>Primo IP disponibile</td>   <td class="txtright"><b><?=$primo?></b></td>
@@ -159,14 +162,57 @@ else {
 </table>
 </b><br><br>
 
+<?php
+// SUBNETS (Solo per indirizzi classless)
+
+if(!empty($allSubnets)) {
+    $cr = 1; // conta le righe
+    $count = 0; // conta le celle da mettere in fila
+    $countTot = 0; // conta il totale delle celle (confronto con array)
+
+?>
+<h3>LISTA DELLE POSSIBILI SUBNET</h3>
+<h4>Totale Subnet creabili: <?=count($allSubnets)?></h4>
+
+<table class="table table-bordered txtcenter" style="color:white;">
+<tr>
+
+<th>$cr</th>
+
+<?php
+    foreach($allSubnets as $sub) {
+        echo "<td>$sub<td>";
+        $count++;
+        $countTot++;
+        if($count == 5) {
+            $count=0;
+            echo "</tr><tr>";
+            $cr++;
+            if($countTot<count($allSubnets))
+                echo "<th>$cr</th>";
+        }
+    }
+?>
+
+</tr>
+</table> <!-- fine tabella subnets -->
+<br>
+<hr>
+<?php
+} // fine IF (esistono subnet -> indirizzo classless)
+?>
+
+
 <table class="table table-bordered txtcenter" style="color:white;">
     <thead><u><b><h3>Lista Indirizzi IP Disponibili:</h3></b></u></thead>
     <tr>
 
 <?php
 
+
 $cr = 1; // conta le righe
-$count = 0; // conta le celle
+$count = 0; // conta le celle da mettere in fila
+$countTot = 0; // conta il totale delle celle (confronto con array)
 
 if($listaHost['nhost'] > 35000) {
     echo "<h3>Il numero degli host è troppo elevato per elencarli tutti </h3>";
@@ -178,11 +224,13 @@ else {
         
         echo "<td>$lh<td>";
         $count++;
+        $countTot++;
         if($count == 5) {
             $count=0;
             echo "</tr><tr>";
             $cr++;
-            echo "<th>$cr</th>";
+            if($countTot<count($listaHost['lista']))
+                echo "<th>$cr</th>";
         }
     }
 }
@@ -190,33 +238,43 @@ else {
     </tr>
 </table>
 
-<br><br>
-<u><b><h3>Lista dei Nomi Host salvati in rete:</h3></u></b><br>
-<fieldset class="fs scheduler-border">
+<?php
+
+$showthis = false; // mostra o meno il contenuto seguente
+
+// AL MOMENTO IL CONTENUTO È DISABILITATO (ESPERIMENTI IN CORSO)
+if($showthis) {
+?>
+    <br><br>
+    <u><b><h3>Lista dei Nomi Host salvati in rete:</h3></u></b><br>
+    <fieldset class="fs scheduler-border">
 
 
 <?php
 
-// restituisce la lista dei nomi host effettivamente salvati nella rete
-// ==> aggiungere la funzionalità che verifica quelli connessi...
-foreach($listaHost['hostnames'] as $hn) {
+    // NON ANCORA IMPLEMENTATO -------------------------------------------------
+    // restituisce la lista dei nomi host effettivamente salvati nella rete
+    // ==> aggiungere la funzionalità che verifica quelli connessi...
+    foreach($listaHost['hostnames'] as $hn) {
 
-    echo "<span class=\"txt20\">$hn</span>";
-}
+        echo "<span class=\"txt20\">$hn</span>";
+    }
 ?>
 
-</fieldset>
+    </fieldset>
 
+        </div>
+        <div class="col-2"></div>
     </div>
-    <div class="col-2"></div>
-</div>
 
-<div class="row">
-    <div class="col-2"></div>
-    <div class="col-8 txtcenter"></div>
-    <div class="col-2">
-        <br><br><br><br><br>
-        <a style="color:blue" href="reset.php">Torna Indietro </a>
+    <div class="row">
+        <div class="col-2"></div>
+        <div class="col-8 txtcenter"></div>
+        <div class="col-2">
+            <br><br><br><br><br>
+            <a style="color:blue" href="reset.php">Torna Indietro </a>
+        </div>
     </div>
-</div>
+<?php
+} // fine IF showthis 
 

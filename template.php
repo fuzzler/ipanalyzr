@@ -17,6 +17,7 @@ ini_set('display_errors', 2); // per il debug (potrebbe essere deprecata in php7
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-type" content="text/html">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<link rel="icon" type="image/ico" href="../favicon.ico">
 
     <title><?php echo $pagename.' - '.NOME_APP ?></title>
 

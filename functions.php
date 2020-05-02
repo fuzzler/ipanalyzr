@@ -279,3 +279,72 @@ function nSmFromIp($sm) {
     
     return $count;
 }
+
+
+/* ==================== Calculate Subnets ========================
+ * Questa funzione calcola le altre subnet adiacenti 
+ * (se si tratta di indirizzo classless)
+ * Utilizza il metodo 2^n (dove n è l'ultimo bit di rete)
+ */
+
+ function calcSubnets($net,$smbin) {
+
+    $posiz = [1,2,4,8,16,32,64,128];
+    $oct = 0; // ottetto da modificare
+
+    $octects = explode('.',$smbin); // divido gli ottetti in un array
+    $netoct = explode('.', $net); // ottetti della rete
+
+    //var_dump($octects); echo "<hr>";
+    //var_dump($netoct); echo "<hr>";
+
+    $countzero = 0; // conto il numero di zeri (per determinare la posizione dell'ultimo bit di rete)
+    $octnum = 0; // numero dell'ottetto (per successivi calcoli)
+
+    for($i=0; $i<4; $i++) {
+        // DEBUG:echo "Esamino ottetto: ".$octects[$i]."<br>";
+        for($j=0; $j<8; $j++) {
+            // DEBUG: echo $octects[$i][$j]." , ";
+            if($octects[$i][$j] == "0") {                
+                $countzero++;
+            }
+        }
+        // se ho trovato degli zeri esco (il prossimo ottetto saranno tutti zeri)
+        if($countzero>0) {
+            $octnum=$i;
+            break; // esco (ho trovato l'ottetto con l'inizio della porzione host)
+        }
+    }
+
+    // DEBUG:
+    /*
+    echo "<br>Conto zeri: ".$countzero."<br>";
+    echo "Numero ottetto: ".$octnum."<br>";
+    echo "POSIZ:".$posiz[$countzero]."<br>";
+    */
+
+    // modifico l'ottetto (countzero è proprio della posizione giusta -> array offset)
+    for($i=0; $i<255; $i+=$posiz[$countzero]) {
+        // in base all'ottetto creo le reti
+        switch($octnum) {
+            case 0:
+                $subnets[] = "$i.".$netoct[1].".".$netoct[2].".".$netoct[3];
+            break;
+
+            case 1:
+                $subnets[] = $netoct[0].".$i.".$netoct[2].".".$netoct[3];
+            break;
+
+            case 2:
+                $subnets[] = $netoct[0].".".$netoct[1].".$i.".$netoct[3];
+            break;
+
+            case 3:
+                $subnets[] = $netoct[0].".".$netoct[1].".".$netoct[2].".$i";
+            break;
+        }
+    }
+
+    return $subnets;
+
+ }
