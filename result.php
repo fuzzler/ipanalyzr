@@ -204,7 +204,7 @@ if(!empty($allSubnets)) {
 
 
 <table class="table table-bordered txtcenter" style="color:white;">
-    <thead><u><b><h3>Lista Indirizzi IP Disponibili:</h3></b></u></thead>
+    <thead><b><h3>Lista Indirizzi IP Disponibili nella rete <?=$net?></h3></b></thead>
     <tr>
 
 <?php
@@ -214,7 +214,7 @@ $cr = 1; // conta le righe
 $count = 0; // conta le celle da mettere in fila
 $countTot = 0; // conta il totale delle celle (confronto con array)
 
-if($listaHost['nhost'] > 35000) {
+if($listaHost['nhost'] > 2000) {
     echo "<h3>Il numero degli host è troppo elevato per elencarli tutti </h3>";
     echo "<h3>Primo IP: $primo &nbsp&nbsp&nbsp&nbsp|&nbsp&nbsp&nbsp&nbsp Ultimo IP: $ultimo</h3>";
 }
